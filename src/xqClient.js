@@ -285,24 +285,25 @@ window.xq = ( function( window, document, undefined ) {
 	 * @param  {boolean} cache If false, this request will not use a cached response.
 	 * @return {object}        The promise object for this requests for attaching callbacks.
 	 */
-	function query( args, cache, timeout ) {
+	function query( args, options ) {
 		var key, callbacks, frame;
 		// validate input, pass callbacks, and create our cache key.
 		if ( 'object' !== typeof args ) {
 			return false;
 		}
 		key = JSON.stringify( args );
-		// If we haven't been asked to not use the cache, send back cached data as availalble.
-		if ( false !== cache && undefined !== this.requests[ key ] ) {
+		options = options || {};
+		// If we have been asked to use the cache, send back cached data as availalble.
+		if ( true === options.cache && undefined !== this.requests[ key ] ) {
 			return this.requests[ key ].promise();
 		} else {
 			this.requests[ key ] = jQuery.Deferred();
 		}
 		// If we are paused or not loaded yet, send this requests to the queue, else, send it.
 		if ( servers[ this.url ] && ! this.paused ) {
-			sendMessage.call( this, key, timeout );
+			sendMessage.call( this, key, optiosn.timeout );
 		} else {
-			this.queue.push( { key: key, timeout: timeout } );
+			this.queue.push( { key: key, timeout: options.timeout } );
 			frame = getFrame.call( this );
 			if ( undefined === frame.closed && this.url !== frame.src ) {
 				refresh.call( this );
