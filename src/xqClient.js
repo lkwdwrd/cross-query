@@ -301,7 +301,7 @@ window.xq = ( function( window, document, undefined ) {
 		}
 		// If we are paused or not loaded yet, send this requests to the queue, else, send it.
 		if ( servers[ this.url ] && ! this.paused ) {
-			sendMessage.call( this, key, optiosn.timeout );
+			sendMessage.call( this, key, options.timeout );
 		} else {
 			this.queue.push( { key: key, timeout: options.timeout } );
 			frame = getFrame.call( this );

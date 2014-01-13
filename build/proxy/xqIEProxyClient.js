@@ -48,7 +48,7 @@
 	 * @param  {boolean} cache If false, this request will not use a cached response.
 	 * @return {object}        The promise object for this requests for attaching callbacks.
 	 */
-	function query( args, cache, timeout ) {
+	function query( args, options ) {
 		if ( this.win.closed ) {
 			this.openWindow();
 		}
@@ -58,7 +58,7 @@
 		return this.xqObject.query({
 			action: 'proxyCall',
 			data: args
-		}, cache, timeout );
+		}, options );
 	}
 	/**
 	 * Overloads the get method so that we can return the window object, not the proxy frame.
@@ -91,7 +91,11 @@
 		this.xqObject.query({
 			action: 'xqProxyActivate',
 			data: this.messageKey
-		}, false, -1 ).always( _bind( this, xqDeactivate ) );
+		}, {
+			cache: false,
+			timeoout: -1
+		})
+		.always( _bind( this, xqDeactivate ) );
 		this.active = true;
 	}
 	/**
@@ -132,7 +136,7 @@
 	 *
 	 * @return {string} A randomized, yet unique ID to use for this window.
 	 */
-	function _xquid(){
+	function _xquid() {
 		xquid++;
 		return Math.random().toString(36).substring(7) + xquid;
 	}
