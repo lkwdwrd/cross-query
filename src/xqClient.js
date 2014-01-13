@@ -34,7 +34,7 @@ window.xq = ( function( window, document, undefined ) {
 		args = args || {};
 		
 		// If a custom timout was sent, use it
-		if ( 'number' === args.timeout && ! isNaN( args.timeout ) ) {
+		if ( 'number' === typeof( args.timeout ) && ! isNaN( args.timeout ) ) {
 			xqObject.delay = parseInt( args.timeout, 10 );
 			delete args.timeout;
 		}
