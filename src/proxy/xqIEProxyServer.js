@@ -4,16 +4,6 @@
 	var initialized = false, windowReady = false, locked = false, isIframe = ( ! window.opener ),
 		callbacks = {}, queue = [], requests = {}, xqMain = window.xqServer, xqObj,
 		messageKey = '', activationKey = '', cryptKey = '', callCount = 0, throttle = 50;
-	// Overload the XQServer according to where this is being loaded.
-	if ( ! isIframe ) {
-		window.xqServer = xqLocalStorage;
-		_setKeys( window.name );
-	} else {
-		window.xqServer = xqProxy;
-	}
-	// Allow for an encryption system to be added if desired.
-	window.xqServer.crypt = _passThrough;
-	window.xqServer.decrypt = _passThrough;
 	// **************************
 	// Window Methods
 	// **************************
@@ -295,7 +285,16 @@
 			_handleProxyCall.call( item.context, item.data );
 		}
 	}
-
+	// Overload the XQServer according to where this is being loaded.
+	if ( ! isIframe ) {
+		window.xqServer = xqLocalStorage;
+		_setKeys( window.name );
+	} else {
+		window.xqServer = xqProxy;
+	}
+	// Allow for an encryption system to be added if desired.
+	window.xqServer.crypt = _passThrough;
+	window.xqServer.decrypt = _passThrough;
 	// Add listeners according to browser capability (IE9 aEL, IE8aE on the document).
 	if ( window.addEventListener ) {
 		window.addEventListener( 'storage', _delegateStorageEvent, false );

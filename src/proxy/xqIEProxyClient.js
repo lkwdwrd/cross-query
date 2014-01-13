@@ -2,8 +2,6 @@
 	'use strict';
 	// Set up caches and stash a reference to the original method.
 	var xquid = -1, proxies = {}, xqMain = window.xq;
-	// Re-reference the XQ method to our wrapper method.
-	window.xq = xqProxy;
 	/**
 	 * Overloads the main XQ method with a wrapper to account for IE8-9 cross window postMessage support.
 	 *
@@ -135,4 +133,6 @@
 		xquid++;
 		return Math.random().toString(36).substring(7) + xquid;
 	}
+	// Re-reference the XQ method to our wrapper method.
+	window.xq = xqProxy;
 })( window, document, undefined );
