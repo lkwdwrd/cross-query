@@ -23,7 +23,8 @@ module.exports = function( grunt ) {
 				globals: {
 					window:   true,
 					document: true,
-					console:  true
+					console:  true,
+					module: true,
 				}
 			}
 		},
