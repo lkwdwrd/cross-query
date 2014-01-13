@@ -6,7 +6,7 @@ module.exports = function( grunt ) {
 		jshint: {
 			all: [
 				'Gruntfile.js',
-				'src/*.js',
+				'src/**/*.js',
 			],
 			options: {
 				curly:     true,
@@ -25,6 +25,8 @@ module.exports = function( grunt ) {
 					document: true,
 					console:  true,
 					module: true,
+					xq: true,
+					xqServer: true
 				}
 			}
 		},
@@ -46,21 +48,21 @@ module.exports = function( grunt ) {
 				dest: 'build/xqClient.js'
 			},
 			proxyClient: {
-				src: ['src/proxy/xqProxyClient.js'],
-				dest: 'build/proxy/xqProxyClient.js'
+				src: ['src/proxy/xqIEProxyClient.js'],
+				dest: 'build/proxy/xqIEProxyClient.js'
 			},
 			proxyServer: {
-				src: ['src/proxy/xqProxyServer.js'],
-				dest: 'build/proxy/xqProxyServer.js'
+				src: ['src/proxy/xqIEProxyServer.js'],
+				dest: 'build/proxy/xqIEProxyServer.js'
 			},
 		},
 		uglify: {
 			all: {
 				files: {
-					'build/xqServer.js': ['build/xqServer.min.js'],
-					'build/xqClient.js': ['build/xqClient.min.js'],
-					'build/proxy/xqProxyServer.js': ['build/proxy/xqProxyServer.min.js'],
-					'build/proxy/xqProxyClient.js': ['build/proxy/xqProxyClient.min.js']
+					'build/xqServer.min.js': ['build/xqServer.js'],
+					'build/xqClient.min.js': ['build/xqClient.js'],
+					'build/proxy/xqIEProxyServer.min.js': ['build/proxy/xqIEProxyServer.js'],
+					'build/proxy/xqIEProxyClient.min.js': ['build/proxy/xqIEProxyClient.js']
 				},
 				options: {
 					banner: '/*! <%= pkg.title %> - v<%= pkg.version %>\n' +
