@@ -101,7 +101,8 @@
 		// Setup the callback context
 		context = {
 			sendSuccess: _sendResponse( true, responseData.callID ),
-			sendFail: _sendResponse( false, responseData.callID )
+			sendFail: _sendResponse( false, responseData.callID ),
+			sendNotification: _sendResponse( 'notify', responseData.callID )
 		};
 		if ( ! callbacks[ action ] ) {
 			context.sendFail( 'No callable action was sent' );
