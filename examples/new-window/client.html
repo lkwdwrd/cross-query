@@ -6,6 +6,9 @@
 	<body>
 		<h1>Cross Query "Client"</h1>
 		<h2>server to client example</h2>
+		<h3>Send Data</h3>
+		<input type="text" id="send-data" style="float: left; margin: 0 2% 0 0; width: 75%; display:block;"/>
+		<input type="submit" id="send-submit" style="float: right; margin: 0; width: 22%; display: block;" >
 		<h3>You've sent:</h3>
 		<div id="sent-data"></div>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -31,6 +34,11 @@
 				 * @return {void}
 				 */
 				function sendData(){
+					if ( ! serverWindow ){
+						serverFrame = xq( frameURL, frameArgs );
+						serverFrame.query( {action: 'openConnection' }, { timeout: -1 } )
+							.progress( recieveData );
+					}
 					serverWindow.query( {action: 'print', data: $text.val() } );
 					$text.val('');
 				}
@@ -64,10 +72,7 @@
 					$result.html( $result.html() + '<p>' + escapeText( data ) + '</p>' );
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
-				serverFrame = xq( frameURL, frameArgs );
 				$button.on( 'click', sendData );
-				serverFrame.query( {action: 'openConnection' }, { timeout: -1 } )
-					.progress( recieveData );
 			})();
 		</script>
 	</body>
