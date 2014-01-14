@@ -17,7 +17,7 @@
 					frameURL = 'http://lkwdwrd.github.io/cross-query/examples/server-client/server.html';
 					frameArgs = {
 						width: '90%',
-						height: 40,
+						height: 4,
 						frameBorder: 1,
 						style: 'margin: 0 auto; display: block;'
 					};
@@ -52,7 +52,7 @@
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
 				serverFrame = xq( frameURL, frameArgs );
-				serverFrame.query( {action: 'openConnection', data: $text.val() }, { timeout: -1 } )
+				serverFrame.query( {action: 'openConnection' }, { timeout: -1 } )
 					.progress( recieveData );
 			})();
 		</script>
