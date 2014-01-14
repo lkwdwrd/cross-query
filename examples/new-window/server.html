@@ -19,8 +19,8 @@
 			(function(){
 				//Vars and some cached element references.
 				var serverRef, notifyMethod,
-					$text = $( '#send-submit' );
-					$button = $( '#send-data' );
+					$text = $( '#send-data' );
+					$button = $( '#send-submit' );
 					$sentDiv = $( '#data-sent' );
 				/**
 				 * Escapes entities in a string to prevent injection. Adapted from Underscorejs.
@@ -58,7 +58,7 @@
 				 */
 				function openConnection(){
 					notifyMethod = this.sendNotification;
-					$text.on( 'click', sendData );
+					$button.on( 'click', sendData );
 				}
 				/**
 				 * Sends the actual notification back to the parent frame using the cached notify method.
