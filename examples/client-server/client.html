@@ -36,6 +36,7 @@
 				 */
 				function sendData(){
 					serverFrame.query( {action: 'print', data: text.val } );
+					text.val = '';
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
 				serverFrame = xq( frame );
