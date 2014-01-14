@@ -22,8 +22,8 @@
 			(function(){
 				//Vars and some cached element references.
 				var serverRef, notifyMethod,
-					$text = $( '#send-data' );
-					$button = $( '#send-submit' );
+					$text = $( '#send-data' ),
+					$button = $( '#send-submit' ),
 					$sentDiv = $( '#data-sent' );
 				/**
 				 * Escapes entities in a string to prevent injection. Adapted from Underscorejs.
@@ -62,7 +62,7 @@
 				function openConnection(){
 					notifyMethod = this.sendNotification;
 					$button.on( 'click', sendData );
-					$(window).on( 'unload', function(){ notifyMethod( 'unloading' ) } );
+					$(window).on( 'unload', closeWindow( this.sendSuccess ) );
 				}
 				/**
 				 * Sends the actual notification back to the parent frame using the cached notify method.
@@ -72,6 +72,15 @@
 				function sendData(){
 					notifyMethod( $text.val() );
 					$text.val('');
+				}
+				/**
+				 * Helper method to send a message to the main window that this one is closing.
+				 *
+				 * @param  {Function} The function to send on close.
+				 * @return {Function} The function to use as the unload handler.
+				 */
+				function closeWindow( successMethod ) {
+					return function(){ successMethod() };
 				}
 				// OK, we have all the pieces, fire up Cross Query's server.
 				// Note that storing the serverRef is not explicitly necessary here, but it's a good idea.
