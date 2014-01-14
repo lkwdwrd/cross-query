@@ -79,7 +79,7 @@
 				 */
 				function reInit(){
 					serverWindow.query( {action: 'openConnection' }, { timeout: -1 } )
-						.progress( recieveData ).done('reInit');
+						.progress( recieveData ).done( reInit );
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
 				$button.on( 'click', sendData );
