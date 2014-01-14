@@ -48,7 +48,7 @@
 				 * @return {void}
 				 */
 				function recieveData( data ){
-					result.innerHTML = sentDiv.innerHTML + '<p>' + escapeText( data ) + '</p>';
+					result.innerHTML = result.innerHTML + '<p>' + escapeText( data ) + '</p>';
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
 				serverFrame = xq( frameURL, frameArgs );
