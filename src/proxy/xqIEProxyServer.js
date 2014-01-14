@@ -98,7 +98,8 @@
 		// Setup the callback context
 		context = {
 			sendSuccess: _sendResponse( true, responseData.callID ),
-			sendFail: _sendResponse( false, responseData.callID )
+			sendFail: _sendResponse( false, responseData.callID ),
+			sendNotification: _sendResponse( 'notify', responseData.callID )
 		};
 		if ( ! callbacks[ action ] ) {
 			context.sendFail( 'No callable action was sent' );
@@ -153,7 +154,7 @@
 		initialized = true;
 	}
 	function ifHandleStorageEvent(){
-		var actionKey, rawData, responseData, request;
+		var actionKey, rawData, responseData, responesMethod, request;
 		if ( '' === activationKey ) {
 			return;
 		} else if ( ! windowReady ) {
@@ -171,7 +172,6 @@
 		// If this is an active request, send the data back
 		if ( requests[ actionKey ] ){
 			request = requests[ actionKey ];
-			delete( requests[ actionKey ] );
 			// Try decoding the data.
 			try {
 				if ( 'string' === typeof rawData ){
@@ -187,8 +187,16 @@
 			if ( 'object' !== typeof responseData ) {
 				request.sendFail( { error: 'Unable to decode data' } );
 			}
+
+			if ( 'notify' === responseData.success ) {
+				responesMethod = 'sendNotification';
+			} else {
+				responesMethod = ( !! responseData.success ) ? 'sendSuccess' : 'sendFail';
+				// This finishes the request, so remove this request reference.
+				delete( requests[ actionKey ] );
+			}
 			// Send back based on response.
-			request[ !! responseData.success ? 'sendSuccess' : 'sendFail' ]( responseData.data );
+			request[ responesMethod ]( responseData.data );
 		}
 	}
 	function _activateProxy( data ) {
