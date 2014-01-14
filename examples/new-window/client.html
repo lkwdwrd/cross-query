@@ -35,8 +35,8 @@
 				 */
 				function sendData(){
 					if ( ! serverWindow ){
-						serverFrame = xq( frameURL, frameArgs );
-						serverFrame.query( {action: 'openConnection' }, { timeout: -1 } )
+						serverWindow = xq( winURL, winArgs );
+						serverWindow.query( {action: 'openConnection' }, { timeout: -1 } )
 							.progress( recieveData );
 					}
 					serverWindow.query( {action: 'print', data: $text.val() } );
