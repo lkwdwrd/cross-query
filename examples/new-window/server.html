@@ -1,0 +1,81 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>Cross Query Server</title>
+	</head>
+	<body>
+		<h1>Cross Query Server</h1>
+		<h3>Send data:</h3>
+		<input type="text" id="send-data" style="float: left; margin: 0 2% 0 0; width: 75%; display:block;"/>
+		<input type="submit" id="send-submit" style="float: right; margin: 0; width: 22%; display: block;" >
+		<h3>You've sent:</h3>
+		<div id="data-sent"></div>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="../../build/xqServer.min.js"></script>
+		<!--[if lt IE 10]>
+			<script type="text/javascript" src="../../build/proxy/xqIEProxyServer.min.js"></script>
+		<![endif]-->
+		<script id="example-script" type="text/javascript">
+			(function(){
+				//Vars and some cached element references.
+				var serverRef, notifyMethod,
+					$text = $( '#send-submit' );
+					$button = $( '#send-data' );
+					$sentDiv = $( '#data-sent' );
+				/**
+				 * Escapes entities in a string to prevent injection. Adapted from Underscorejs.
+				 * 
+				 * @param  {string} string The string to escape
+				 * @return {string}        The escaped string.
+				 */
+				function escapeText(string) {
+					var entityMap = {
+						'&': '&amp;',
+						'<': '&lt;',
+						'>': '&gt;',
+						'"': '&quot;',
+						"'": '&#x27;'
+					};
+					var entityReg = /[&<>"']/g;
+
+					if (string == null) return '';
+					return ( '' + string ).replace( entityReg, function(match) {
+						return entityMap[match];
+					});
+				};
+				/**
+				 * Send data to the frame using Cross Query.
+				 * 
+				 * @return {void}
+				 */
+				function printData( data ){
+					$sentDiv.html( $sentDiv.html() + '<p>' + escapeText( data ) + '</p>' );
+				}
+				/**
+				 * Send data to the frame using Cross Query.
+				 * 
+				 * @return {void}
+				 */
+				function openConnection(){
+					notifyMethod = this.sendNotification;
+					$text.on( 'click', sendData );
+				}
+				/**
+				 * Sends the actual notification back to the parent frame using the cached notify method.
+				 * 
+				 * @return {void}
+				 */
+				function sendData(){
+					notifyMethod( $text.val() );
+					$text.val('');
+				}
+				// OK, we have all the pieces, fire up Cross Query's server.
+				// Note that storing the serverRef is not explicitly necessary here, but it's a good idea.
+				serverRef = xqServer( {
+					openConnection: openConnection,
+					print: printData
+				}, ['http://lkwdwrd.github.io' ] );
+			})();
+		</script>
+	</body>
+</html>

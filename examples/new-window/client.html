@@ -1,0 +1,74 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>Send data from client to server</title>
+	</head>
+	<body>
+		<h1>Cross Query "Client"</h1>
+		<h2>server to client example</h2>
+		<h3>You've sent:</h3>
+		<div id="sent-data"></div>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="../../build/xqClient.min.js"></script>
+		<!--[if lt IE 10]>
+			<script type="text/javascript" src="../../build/proxy/xqIEProxyClient.min.js"></script>
+		<![endif]-->
+		<script id="example-script" type="text/javascript">
+			(function(){
+				//Vars and some cached element references.
+				var serverWindow,
+					$result = $( '#sent-data' ),
+					$text = $( '#send-data' ),
+					$button = $( '#send-submit' );
+					winURL = 'http://lkwdwrd.github.io/cross-query/examples/server-client/server.html';
+					winArgs = {
+						window: true,
+						attrs: 'width=600,height=450'
+					};
+				/**
+				 * Send data to the frame using Cross Query.
+				 * 
+				 * @return {void}
+				 */
+				function sendData(){
+					serverWindow.query( {action: 'print', data: $text.val() } );
+					$text.val('');
+				}
+				/**
+				 * Escapes entities in a string to prevent injection. Adapted from Underscorejs.
+				 * 
+				 * @param  {string} string The string to escape
+				 * @return {string}        The escaped string.
+				 */
+				function escapeText(string) {
+					var entityMap = {
+						'&': '&amp;',
+						'<': '&lt;',
+						'>': '&gt;',
+						'"': '&quot;',
+						"'": '&#x27;'
+					};
+					var entityReg = /[&<>"']/g;
+
+					if (string == null) return '';
+					return ( '' + string ).replace( entityReg, function(match) {
+						return entityMap[match];
+					});
+				};
+				/**
+				 * Send data to the frame using Cross Query.
+				 * 
+				 * @return {void}
+				 */
+				function recieveData( data ){
+					$result.html( $result.html() + '<p>' + escapeText( data ) + '</p>' );
+				}
+				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
+				serverFrame = xq( frameURL, frameArgs );
+				$button.on( 'click', sendData );
+				serverFrame.query( {action: 'openConnection', data: $text.val() }, { timeout: -1 } )
+					.progress( recieveData );
+			})();
+		</script>
+	</body>
+</html>
