@@ -1,0 +1,52 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>Cross Query Server</title>
+	</head>
+	<body>
+		<h1>Cross Query Server</h1>
+		<h3>You've sent:</h3>
+		<div id="data-sent">
+		</div>
+		<script type="text/javascript" src="../../build/xqServer.min.js"></script>
+		<script id="example-script" type="text/javascript">
+			(function(){
+				//Vars and some cached element references.
+				var serverRef,
+					sentDiv = document.getElementById( 'data-sent' );
+				/**
+				 * Escapes entities in a string to prevent injection. Adapted from Underscorejs.
+				 * 
+				 * @param  {string} string The string to escape
+				 * @return {string}        The escaped string.
+				 */
+				function escapeText(string) {
+					var entityMap = {
+						'&': '&amp;',
+						'<': '&lt;',
+						'>': '&gt;',
+						'"': '&quot;',
+						"'": '&#x27;'
+					};
+					var entityReg = /[&<>"']/g;
+
+					if (string == null) return '';
+					return ( '' + string ).replace( entityReg, function(match) {
+						return entityMap[match];
+					});
+				};
+				/**
+				 * Send data to the frame using Cross Query.
+				 * 
+				 * @return {void}
+				 */
+				function printData( data ){
+					sentDiv.innerHTML = sentDiv.innerHTML + '<p>' + escapeText( data ) + '</p>';
+				}
+				// OK, we have all the pieces, fire up Cross Query's server.
+				// Note that stroing the serverRef is not explicitly necessary here, but it's a good idea.
+				serverRef = xqServer( { print: printData }, ['lkwdwrd.github.io' ] );
+			})();
+		</script>
+	</body>
+</html>
