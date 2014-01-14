@@ -13,35 +13,21 @@
 			(function(){
 				//Vars and some cached element references.
 				var serverFrame,
-					frame = document.getElementById( 'send-frame' ),
-					text = document.getElementById( 'send-data' ),
-					button = document.getElementById( 'send-submit' );
-				/**
-				 * Quick and dirty cross browser event attaching.
-				 * 
-				 * @param {DOM Node}   el  The node to attach the event to.
-				 * @param {string}     evt The event name.
-				 * @param {Function}   fn  The event handler.
-				 */
-				function addEvent( el, evt, fn ) {
-					if ( window.addEventListener ) {
-						el.addEventListener( evt, fn, false );
-					} else if( window.attachEvent ) {
-						el.attachEvent( 'on' + evt, fn );
-					}
-				}
+					$frame = $( '#send-frame'),
+					$text = $( '#send-data' ),
+					$button = $( '#send-submit' );
 				/**
 				 * Send data to the frame using Cross Query.
 				 * 
 				 * @return {void}
 				 */
 				function sendData(){
-					serverFrame.query( {action: 'print', data: text.val } );
-					text.val = '';
+					serverFrame.query( {action: 'print', data: $text.val() } );
+					$text.val('');
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
-				serverFrame = xq( frame );
-				addEvent( button, 'click', sendData );
+				serverFrame = xq( $frame[0] );
+				$button.on( 'click', sendData );
 			})();
 		</script>
 	</body>
