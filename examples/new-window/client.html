@@ -5,12 +5,15 @@
 	</head>
 	<body>
 		<h1>Cross Query "Client"</h1>
-		<h2>server to client example</h2>
-		<h3>Send Data</h3>
-		<input type="text" id="send-data" style="float: left; margin: 0 2% 0 5%; width: 70%; display:block;"/>
-		<input type="submit" id="send-submit" style="float: right; margin: 0 5% 0 0; width: 17%; display: block;" >
-		<h3 style="clear: both;">You've sent:</h3>
-		<div id="sent-data"></div>
+		<h2>new window example</h2>
+		<div style="width: 90%; margin: 0 auto">
+			<h3>Send Data</h3>
+			<input type="text" id="send-data" style="float: left; margin: 0 2% 0 5%; width: 70%; display:block;"/>
+			<input type="submit" id="send-submit" style="float: right; margin: 0 5% 0 0; width: 17%; display: block;" >
+			<div style="clear:both;"></div><!-- crappy clearfixy thing until this is actually styled -->
+			<h3>You've sent:</h3>
+			<div id="sent-data"></div>
+		</div>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 		<script type="text/javascript" src="../../build/xqClient.min.js"></script>
 		<!--[if lt IE 10]>
