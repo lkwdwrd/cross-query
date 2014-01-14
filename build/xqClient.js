@@ -5,7 +5,7 @@
 window.xq = ( function( window, document, undefined ) {
 	'use strict';
 	// Setup vars
-	var jQuery, Deferred = Deferred || {}, XQs = {}, servers = {},
+	var jQuery, Deferred = window.Deferred || {}, XQs = {}, servers = {},
 		iframeDefaults = { width: '0', height: '0', frameBorder: '0', style: { display: 'none' } };
 
 	/**
