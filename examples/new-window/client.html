@@ -37,10 +37,10 @@
 				 * @return {void}
 				 */
 				function sendData(){
+					var init = false
 					if ( ! serverWindow ){
 						serverWindow = xq( winURL, winArgs );
-						serverWindow.query( {action: 'openConnection' }, { timeout: -1 } )
-							.progress( recieveData );
+						reInit();	
 					}
 					serverWindow.query( {action: 'print', data: $text.val() } );
 					$text.val('');
@@ -73,6 +73,13 @@
 				 */
 				function recieveData( data ){
 					$result.html( $result.html() + '<p>' + escapeText( data ) + '</p>' );
+				}
+				/**
+				 * Initializes the server-to-client communication.
+				 */
+				function reInit(){
+					serverWindow.query( {action: 'openConnection' }, { timeout: -1 } )
+						.progress( recieveData ).done('reInit');
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
 				$button.on( 'click', sendData );
