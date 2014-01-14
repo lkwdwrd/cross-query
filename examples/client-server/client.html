@@ -25,7 +25,7 @@
 				function addEvent( el, evt, fn ) {
 					if ( window.addEventListener ) {
 						el.addEventListener( evt, fn, false );
-					} elseif( window.attachEvent ) {
+					} else if( window.attachEvent ) {
 						el.attachEvent( 'on' + evt, fn );
 					}
 				}
