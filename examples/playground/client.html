@@ -80,7 +80,7 @@
 								queryObject.data.forceTimeout = true;
 								break;
 							case 'timeout':
-								optionsObject.timeout = field.value;
+								optionsObject.timeout = parseInt( field.value, 10 );
 								break;
 							case 'final-value':
 								queryObject.data.finalValue = field.value;
