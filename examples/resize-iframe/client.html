@@ -12,7 +12,7 @@
 		<script id="example-script" type="text/javascript">
 			(function(){
 				//Vars and some cached element references.
-				var serverFrame, serverFrame = document.getElementById('send-frame');
+				var sendFrameXQ, sendFrame = document.getElementById('send-frame');
 				/**
 				 * Send data to the frame using Cross Query.
 				 * 
@@ -21,15 +21,15 @@
 				function recieveData( data ){
 					var width = parseInt( data.width, 10 ), height = parseInt( data.height, 10 );
 					if ( ! isNaN( width ) ) {
-						serverFrame.width = width;
+						sendFrame.width = width;
 					}
 					if ( ! isNaN( height ) ) {
-						serverFrame.height = height;
+						sendFrame.height = height;
 					}
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
-				serverFrame = xq( serverFrame );
-				serverFrame.query( {action: 'openConnection' }, { timeout: -1 } )
+				sendFrameXQ = xq( sendFrame );
+				sendFrameXQ.query( {action: 'openConnection' }, { timeout: -1 } )
 					.progress( recieveData );
 			})();
 		</script>
