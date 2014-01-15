@@ -166,7 +166,7 @@ window.xqServer = ( function( window, document, undefined ) {
 	 */
 	function _shutdown() {
 		var i, length;
-		for ( i = 0, length = shutdown.lenght; i < length; i++ ) {
+		for ( i = 0, length = shutdown.length; i < length; i++ ) {
 			shutdown[i].method( shutdown[i].data );
 		}
 	}
