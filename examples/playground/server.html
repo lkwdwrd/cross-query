@@ -30,6 +30,7 @@
 							sendNotification( lines.shift() );
 						} else {
 							_sendFinal( lines.shift() );
+							return;
 						}
 						window.setTimeout( _notifyLines, 500 );
 					}
@@ -52,7 +53,7 @@
 						var lines = data.sendText.split( "\n" );
 						_notifyLines();
 					} else {
-						sendFinal( data.sendText );
+						_sendFinal( data.sendText );
 					}
 				}
 				// OK, we have all the pieces, fire up Cross Query's server.
