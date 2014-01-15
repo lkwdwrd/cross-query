@@ -4,5 +4,186 @@
 	</head>
 	<body>
 		<h1>Cross Query</h1>
+		<p>
+			<a href="https://github.com/lkwdwrd/cross-query">Cross Query</a> is a small library wrapped around the HTML 5 postMessage system. It allows for javascript data to flow between frames or windows using a call/response style system. Once set up, sending information between frames and windows, even cross origin, is as simple as a couple function calls with callbacks.
+		</p>
+		<h2>Fast Setup</h2>
+		<h3>Client</h3>
+{% highlight javascript %}
+<!--include a deferred library, often jQuery-->
+<script type="text/javascript" src="js/deferred.min.js"></script>
+<!--include Cross Query client script-->
+<script type="text/javascript" src="js/xqClient.min.js"></script>
+<!--Run your code to send data to frames or windows-->
+<script type="text/javascript">
+	// Set up a connection to the frame.
+	var myFrame = xq( 'http://example.com/frame/server' );
+	// Send data to the frame and set up callbacks.
+	myFrame.query({action: 'doStuff', data: 'anything you want to send' })
+		.done( handleResponse );
+	/**
+	 * The callback function.
+	 * @param  {mixed} data Data returned from the frame or window.
+	 */
+	function handleResponse( data ) {
+		//do cool stuff with data returned from the frame or window.
+	}
+</script>
+{% endhighlight %}
+		<h3>Server</h3>
+{% highlight javascript %}
+<!--include Cross Query server script-->
+<script type="text/javascript" src="js/xqServer.min.js"></script>
+<!--Run your code to hand requests from the client-->
+<script type="text/javascript">
+	// Set up the server with available actions and acceptable requesting origins.
+	var myServer = xqServer({ doStuff: handleDoStuff }, ['http://clientdomain.com']);
+	/**
+	 * The callback frunction to process data for the doStuff action.
+	 * @param  {mixed} data Data sent from the client frame as part of this request.
+	 */
+	function handleDoStuff( data ) {
+		//process data as needed and send response
+		this.sendSuccess('I am finished');
+	}
+</script>
+{% endhighlight %}
+		<h2>Function Reference</h2>
+		<h3>Client</h3>
+		<div id="client-xq">
+			<h4>xq()</h4>
+			<code>xq( url [, options] )</code>
+			<p>
+				Creates a Cross Query connection to an iframe or new window.
+			</p>
+			<h5>Parameters</h5>
+			<p>
+				<strong>url</strong> <em>(string|HTMLIFrameElement)</em>:<br />
+				Either the url of server, or an iframe element reference containing a server.
+			</p>
+			<p>
+				<strong>[, options]</strong> <em>(Object)</em>:<br />
+				Optional. If the URL is passed as a string this object can contain a list of attributes that will be attached to the created iframe. By default a created iframe will use <code>{ width: 0, height: 0, frameBorder: 0, style: { display: 'none' } }</code>.
+			</p>
+			<p>
+				To create a new window instead of an iframe pass <code>{ window: true, attrs: strWindowFeatures }</code> where <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window.open#Return_value_and_parameters">strWindowFeatures</a> controls the features the window hs when it opens.
+			</p>
+			<p>
+				<code>timeout: Integer</code> can be passed along with any of the other options to set the default timeout for any query made to the frame/window. Setting a negative number for the default timeout will disable timeouts for requests that do not specify a query specific timeout. If no timeout is passed, timeouts will be set to 5000 miliseconds.
+			</p>
+			<h5>Return</h5>
+			<p>
+				<strong>Object.</strong> A client object used for interacting with the frame or window created or passed. The object contains the following methods:
+				<ul>
+					<li><code>query</code></li>
+					<li><code>get</code></li>
+					<li><code>pause</code></li>
+					<li><code>play</code></li>
+					<li><code>refresh</code></li>
+				</ul>
+			</p>
+{% highlight javascript %}
+var myFrame = xq( 'http://example.com', { window: true, attrs: 'width=0,height=0' } );
+{% endhighlight %}
+		</div>
+		<div id="client-query">
+			<h4>.query()</h4>
+			<code>.query( args [, options] )</code>
+			<p>
+				This client method queries a server set up with the <code>xq()</code> function.
+			</p>
+			<h5>Parameters</h5>
+			<p>
+				<strong>args</strong> <em>(Objects)</em>:<br />
+				The args object should contain two properties, action and data. 
+				<ul>
+					<li>
+						<code>action: String</code> The action must correspond to a registerred action on the Cross Query server. 
+					</li>
+					<li>
+						<code>data: Arbitrary</code> The data property can be any arbitrary data (object, string, number) and will be passed to the action handler function registerred on the server.
+					</li>
+				</ul>
+			</p>
+			<p>
+				<strong>[, options]</strong> <em>(Object)</em>:<br />
+				Optional. Currently there are two options available for queries. 
+				<ul>
+					<li>
+						<code>cache: true</code> will trigger a lookup to see if the exact query has be made before. If so the original promise object will be returned and additional callbacks can be attached to it. If that request had already been resolved or rejected, callbacks will execute immediately after being added.
+					</li>
+					<li>
+						<code>timeout: Integer</code> causes the query to used the passed integer in miliseconds as this query's timeout length. Setting the timeout to a negative number will disable timeouts for this request.
+					</li>
+				</ul>
+			</p>
+			<h5>Return</h5>
+			<p>
+				<strong>Deferred</strong> A defferred object that can be used to attach callback based on the resolution of the request. See the jQuery documentation for deferreds to get a handle on how they work. <code>Deferred.done( callback )</code> to handle successful requests, <code>Deferred.fail( callback )</code> to handle failed requests, <code>Deferred.progress( callback )</code> to handle any number of notifications while the request is still active.
+			</p>
+{% highlight javascript %}
+var myFrame.query( { action: 'exampleAction', data: 'arbitrary data' }, { timeout: 1000 } )
+	.done( doneCallback )
+	.progress( notificationCallback )
+	.fail( errorHandler );
+{% endhighlight %}
+		</div>
+		<div id="client-get">
+			<h4>.get()</h4>
+			<code>.get()</code>
+			<p>
+				This client method gets the reference to the frame or window object set up with the <code>xq()</code> function.
+			</p>
+			<h5>Return</h5>
+			<p>
+				<strong>HTMLIFrameElement|window</strong> This will either retrieve the iframe DOM node reference, or the reference to the child window object depending on which was set up.
+			</p>
+{% highlight javascript %}
+var myFrame.get().width = 300;
+{% endhighlight %}
+		</div>
+		<div id="client-pause">
+			<h4>.pause()</h4>
+			<code>.pause()</code>
+			<p>
+				This client method temporarily halts requests to the server set up with the <code>xq()</code> function. Any requests made will be placed into a queue and will be sent when the server has been unpaused.
+			</p>
+			<h5>Return</h5>
+			<p>
+				<strong>null</strong> This method does not return any values.
+			</p>
+{% highlight javascript %}
+var myFrame.pause();
+{% endhighlight %}
+		</div>
+		<div id="client-play">
+			<h4>.play()</h4>
+			<code>.play()</code>
+			<p>
+				This client method unpauses the server set up with the <code>xq()</code> function. Any requests placed into the queue are sent to the server.
+			</p>
+			<h5>Return</h5>
+			<p>
+				<strong>null</strong> This method does not return any values.
+			</p>
+{% highlight javascript %}
+var myFrame.play();
+{% endhighlight %}
+		</div>
+		<div id="client-refresh">
+			<h4>.refresh()</h4>
+			<code>.refresh()</code>
+			<p>
+				Refreshes the server set up with the <code>xq()</code> function back to the original URL for making requsts. Useful if the frame or window has changed urls.
+			</p>
+			<h5>Return</h5>
+			<p>
+				<strong>null</strong> This method does not return any values.
+			</p>
+{% highlight javascript %}
+var myFrame.pause();
+{% endhighlight %}
+		</div>
+		<h3>Server</h3>
 	</body>
 </html>
