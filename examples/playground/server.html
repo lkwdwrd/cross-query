@@ -1,0 +1,64 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>Cross Query Server</title>
+	</head>
+	<body>
+		<h1>Cross Query Server</h1>
+		<script type="text/javascript" src="../../build/xqServer.min.js"></script>
+		<script id="example-script" type="text/javascript">
+			(function(){
+				//Declare server ref.
+				var serverRef;
+				/**
+				 * Handle the request for a round trip using the vairous available options.
+				 * 
+				 * @return {void}
+				 */
+				function handleTextQuery( data ){
+					// Cache all our return methods for easier access.
+					var sendSuccess = this.sendSuccess,
+						sendFail = this.sendFail,
+						sendNotification = this.sendNotification;
+					/**
+					 * Handles sending notifications for each line until the last at 500ms delays.
+					 * 
+					 * @return {void}.
+					 */
+					function _notifyLines(){
+						if ( 1 < lines.length ) {
+							sendNotification( lines.shift() );
+						} else {
+							_sendFinal( lines.shift() );
+						}
+						window.setTimeout( _notifyLines, 500 );
+					}
+					/**
+					 * Handles sending the final notification for this request.
+					 * @param  {string} data The data to send back.
+					 * @return {void}
+					 */
+					function _sendFinal( text )
+						if ( true === data.forceTimeout ) {
+							return;
+						} else if ( 'success' === data.finalValue ) {
+							sendSuccess( text );
+						} else {
+							sendFail( text );
+						}
+					}
+					// Decide whether to send lines or just a response.
+					if ( true === data.notifyLines ) {
+						var lines = data.sendText.split( "\n" );
+						_notifyLines();
+					} else {
+						sendFinal( data.sendText );
+					}
+				}
+				// OK, we have all the pieces, fire up Cross Query's server.
+				// Note that storing the serverRef is not explicitly necessary here, but it's a good idea.
+				serverRef = xqServer( { testQuery: handleTestQuery }, ['http://lkwdwrd.github.io' ] );
+			})();
+		</script>
+	</body>
+</html>

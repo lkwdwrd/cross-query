@@ -1,0 +1,143 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>Send data from client to server</title>
+	</head>
+	<body>
+		<h1>Cross Query "Client"</h1>
+		<h2>server to client example</h2>
+		<h3>Options:</h3>
+		<form id="send-form" method="posts">
+			<p>
+				<input type="checkbox" id="notify-lines" name="notify-lines" checked="checked"/> <label for="notify-lines">Send each line as a notification.</label><br />
+				<input type="checkbox" id="use-cache" name="use-cache" /> <label for="use-cache">Use the cache</label><br />
+				<input type="checkbox" id="force-timeout" name="foce-timeout" /> <label for="force-timeout">Force a timeout</label>
+			</p>
+			<p>
+				<label for="timeout">Timeout length (in miliseconds): </label><br />
+				<input type="text" name="timeout" id="timeout" value="5000" />
+			</p>
+			<h4>Final response</h4>
+			<p>
+				<input type="radio" value="success" name="final-value" id="final-value-success" checked="checked"/> <label for="final-value-success">Success</label><br />
+				<input type="radio" value="fail" name="final-value" id="final-value-fail" /> <label for="final-value-fail">Fail</label>
+			</p>
+			<h4>Data to send</h4>
+			<textarea name="send-text" id="send-text" rows="8" style="width: 80%"></textarea>
+			<p>
+				<button>Send to frame</button>
+			</p>
+		</form>
+		<h3>Recieved Data:</h3>
+		<div id="sent-data"></div>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="../../build/xqClient.min.js"></script>
+		<script id="example-script" type="text/javascript">
+			(function(){
+				//Vars and some cached element references.
+				var serverFrame,
+					$form = $('#send-form'),
+					$text = $('#send-text'),
+					$result = $('#sent-data'),
+					frameURL = 'http://lkwdwrd.github.io/cross-query/examples/playground/server.html';
+				/**
+				 * Escapes entities in a string to prevent injection. Adapted from Underscorejs.
+				 * 
+				 * @param  {string} string The string to escape
+				 * @return {string}        The escaped string.
+				 */
+				function escapeText(string) {
+					var entityMap = {
+						'&': '&amp;',
+						'<': '&lt;',
+						'>': '&gt;',
+						'"': '&quot;',
+						"'": '&#x27;'
+					};
+					var entityReg = /[&<>"']/g;
+
+					if (string == null) return '';
+					return ( '' + string ).replace( entityReg, function(match) {
+						return entityMap[match];
+					});
+				};
+
+				function sendData( e ){
+					e.preventDefault();
+					// Gather options info
+					var queryObject = { action: 'testQuery', data: {} },
+						optionsObject = {},
+						data = $form.serializeArray();
+					$.each( data, function( i, field ){
+						switch( field.name ){
+							case 'notify-lines':
+								queryObject.data.notifyLines = true;
+								break;
+							case 'use-cache':
+								optionsObject.cache = true;
+								break;
+							case 'force-timeout':
+								queryObject.data.forceTimeout = true;
+								break;
+							case 'timeout':
+								optionsObject.timeout = field.value;
+								break;
+							case 'final-value':
+								queryObject.data.finalValue = field.value;
+								break;
+							case 'send-text':
+								queryObject.data.sendText = field.value;
+								break;
+						}
+					});
+					$text.val('');
+					// Send the query based on options.
+					serverFrame.query( queryObject, optionsObject )
+					.done( handleDone )
+					.fail( handleFail )
+					.progress( handleProgress );
+				}
+				/**
+				 * Log reponse from the frame.
+				 *
+				 * @param  {string} The data to log in string form.
+				 * @return {void}
+				 */
+				function logData( data ){
+					$result.html( $result.() + data );
+				}
+				/**
+				 * Handles logging a successful frame response.
+				 * 
+				 * @param  {mixed} data The data sent back
+				 * @return {void}
+				 */
+				function handleDone( data ) {
+					logData( '<p style="color: green;">Success: ' + escapeText( data ) + '</p>' );
+				}
+				/**
+				 * Handles logging a failure frame response.
+				 * 
+				 * @param  {mixed} data The data sent back
+				 * @return {void}
+				 */
+				function handleFail( data ) {
+					logData( '<p style="color: red;">Error: ' + escapeText( data ) + '</p>' );
+				}
+				/**
+				 * Handles logging a notification frame response.
+				 * 
+				 * @param  {mixed} data The data sent back
+				 * @return {void}
+				 */
+				function handleProgress( data ) {
+					logData( '<p style="color: blue;">' + escapeText( data ) + '</p>' );
+				}
+
+				// OK, we have all the pieces, fire up Cross Query.
+				serverFrame = xq( frameURL );
+				$form.on( 'submit', sendData );
+			})();
+		</script>
+	</body>
+</html>
