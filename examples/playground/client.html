@@ -122,6 +122,9 @@
 				 * @return {void}
 				 */
 				function handleFail( data ) {
+					if ( 'object' === typeof data ) {
+						data = data.error;
+					}
 					logData( '<p style="color: red;">Error: ' + escapeText( data ) + '</p>' );
 				}
 				/**
