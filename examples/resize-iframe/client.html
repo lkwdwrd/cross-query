@@ -1,0 +1,37 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>Send data from client to server</title>
+	</head>
+	<body>
+		<h1>Cross Query "Client"</h1>
+		<h2>server to client example</h2>
+		<iframe id="send-frame" src="server.html" width="300" height="100"></iframe>
+		<script type="text/javascript" src="../js/deferred.min.js"></script>
+		<script type="text/javascript" src="../../build/xqClient.min.js"></script>
+		<script id="example-script" type="text/javascript">
+			(function(){
+				//Vars and some cached element references.
+				var serverFrame, serverFrame = document.getElementById('send-frame');
+				/**
+				 * Send data to the frame using Cross Query.
+				 * 
+				 * @return {void}
+				 */
+				function recieveData( data ){
+					var width = parseInt( data.width, 10 ), height = parseInt( data.height, 10 );
+					if ( ! isNaN( width ) ) {
+						serverFrame.width = width;
+					}
+					if ( ! isNaN( height ) ) {
+						serverFrame.height = height;
+					}
+				}
+				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
+				serverFrame = xq( send-frame );
+				serverFrame.query( {action: 'openConnection' }, { timeout: -1 } )
+					.progress( recieveData );
+			})();
+		</script>
+	</body>
+</html>

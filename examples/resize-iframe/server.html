@@ -1,0 +1,53 @@
+<!Doctype html>
+<html>
+	<head>
+		<title>Cross Query Server</title>
+	</head>
+	<body>
+		<h1>Cross Query Server</h1>
+		<h3>Set Frame Dimensions:</h3>
+		<p>
+			<label for="width-field"><br />
+			<input type="text" id="width-field" value="300" />
+		</p>
+		<p> 
+			<label for="height-field"><br />
+			<input type="text" id="height-field" value="200" />
+		</p>
+		<input type="submit" id="send-submit" style="float: right; margin: 0; width: 20%; display: block;" >
+		<script type="text/javascript" src="../../build/xqServer.min.js"></script>
+		<script id="example-script" type="text/javascript">
+			(function(){
+				//Vars and some cached element references.
+				var serverRef, notifyMethod,
+					widthField = document.getElementById( 'width-field' ),
+					heightField = document.getElementById('height-field'),
+					button = document.getElementById( 'send-submit' );
+				/**
+				 * Send data to the frame using Cross Query.
+				 * 
+				 * @return {void}
+				 */
+				function openConnection(){
+					notifyMethod = this.sendNotification;
+					if ( 'function' === typeof window.addEventListener ) {
+						button.addEventListener( 'click', sendData );
+					} else {
+						button.attachEvent( 'click', sendData );
+					}
+				}
+				/**
+				 * Sends the actual notification back to the parent frame using the cached notify method.
+				 * 
+				 * @return {void}
+				 */
+				function sendData(){
+					notifyMethod( { width: widthField.value, height: heightField.value } );
+				}
+				// OK, we have all the pieces, fire up Cross Query's server.
+				// Note that storing the serverRef is not explicitly necessary here, but it's a good idea.
+				serverRef = xqServer( { openConnection: openConnection }, ['http://lkwdwrd.github.io' ] );
+			})();
+		</script>
+	</body>
+</html>
