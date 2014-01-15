@@ -22,7 +22,7 @@
 		<script id="example-script" type="text/javascript">
 			(function(){
 				//Vars and some cached element references.
-				var serverWindow,
+				var serverWindow, reInit = true,
 					$result = $( '#sent-data' ),
 					$text = $( '#send-data' ),
 					$button = $( '#send-submit' );
@@ -37,11 +37,17 @@
 				 * @return {void}
 				 */
 				function sendData(){
-					var init = false
+					// If we don't have an open window, create one.
 					if ( ! serverWindow ){
-						serverWindow = xq( winURL, winArgs );
-						reInit();	
+						serverWindow = xq( winURL, winArgs );	
 					}
+					// System for reInitializing the communication should the window close.
+					if ( reInit ) {
+						serverWindow.query( {action: 'openConnection' }, { timeout: -1 } )
+						.progress( recieveData ).done( _reInit );
+						reInit = false;
+					}
+					// Send the data using .query()
 					serverWindow.query( {action: 'print', data: $text.val() } );
 					$text.val('');
 				}
@@ -77,9 +83,8 @@
 				/**
 				 * Initializes the server-to-client communication.
 				 */
-				function reInit(){
-					serverWindow.query( {action: 'openConnection' }, { timeout: -1 } )
-						.progress( recieveData ).done( reInit );
+				function _reInit(){
+					reInit = true;
 				}
 				// OK, we have all the pieces, fire up Cross Query and attach the event to the button.
 				$button.on( 'click', sendData );
