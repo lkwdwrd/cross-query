@@ -62,7 +62,7 @@
 				function openConnection(){
 					notifyMethod = this.sendNotification;
 					$button.on( 'click', sendData );
-					$(window).on( 'unload', closeWindow( this.sendSuccess ) );
+					serverRef.registerShutdown( this.sendSuccess );
 				}
 				/**
 				 * Sends the actual notification back to the parent frame using the cached notify method.

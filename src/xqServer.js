@@ -2,8 +2,9 @@
 window.xqServer = ( function( window, document, undefined ) {
 	'use strict';
 	// Setup vars
-	var initialized = false, domains = [], callbacks = {}, initURL = window.location.toString(),
-		initOrigin, client = ( ! window.opener ) ? window.parent : window.opener;
+	var initialized = false, domains = [], callbacks = {}, shutdown = [],
+		initURL = window.location.toString(), initOrigin,
+		client = ( ! window.opener ) ? window.parent : window.opener;
 	
 	/**
 	 * Sets up the XQ postMessage handler for the server side.
@@ -30,8 +31,12 @@ window.xqServer = ( function( window, document, undefined ) {
 		}
 		// Tell interested parties that we are now ready to accept requests.
 		_initPing();
-		// Allow dynamic adding and removing of actions.
-		return { addAction: addAction, removeAction: removeAction };
+		// Allow dynamic adding and removing of actions, plus shutdown methods.
+		return {
+			addAction: addAction,
+			removeAction: removeAction,
+			registerShutdown: registerShutdown
+		};
 	}
 	/**
 	 * Handles recieiving a postMessage request.
@@ -107,6 +112,17 @@ window.xqServer = ( function( window, document, undefined ) {
 		}
 	}
 	/**
+	 * Adds a shutdown method to be called just before the de-init message goes out.
+	 *
+	 * @param {Function} method The method to call on shutdown.
+	 * @return {void}
+	 */
+	function registerShutdown( method, data ){
+		if ( 'function' === typeof method ) {
+			shutdown.push( { method: method, data: data } );
+		}
+	}
+	/**
 	 * Makes the actual postMessage request to the parent on a failed request.
 	 * 
 	 * @param  {object} message The response data object.
@@ -136,7 +152,19 @@ window.xqServer = ( function( window, document, undefined ) {
 	 */
 	function _deInitPing() {
 		if ( initialized ) {
+			_shutdown();
 			client.postMessage( JSON.stringify( { init: 'xq-de-init', server: initURL } ), initOrigin );
+		}
+	}
+	/**
+	 * Runs all shutdown methods prior to sending a de-init ping.
+	 * 
+	 * @return {void}
+	 */
+	function _shutdown() {
+		var i, length;
+		for ( i = 0, length = shutdown.lenght; i < length; i++ ) {
+			shutdown[i].method( shutdown[i].data );
 		}
 	}
 	/**
