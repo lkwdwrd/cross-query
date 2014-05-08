@@ -1,4 +1,4 @@
-/*! Cross Query - v0.0.8
+/*! Cross Query - v0.1.0
  * 
  * Copyright (c) 2014; * Licensed GPLv2+ */
 (function( window, document, undefined ){
