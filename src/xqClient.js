@@ -174,6 +174,8 @@ window.xq = ( function( window, document, undefined ) {
 	 */
 	function refresh() {
 		var frame = getFrame.call( this );
+		// Mark the frame as unready until we get the load call again.
+		servers[ this.url ] = false;
 		// Accessible way to check if this is a window object or iframe.
 		if ( undefined === frame.closed ) {
 			frame.src = this.url;
