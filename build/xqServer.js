@@ -1,4 +1,4 @@
-/*! Cross Query - v0.1.0
+/*! Cross Query - v0.2.0
  * 
  * Copyright (c) 2014; * Licensed GPLv2+ */
 // Cross Query iframe messaging system server.
