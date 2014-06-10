@@ -228,7 +228,7 @@ window.xq = ( function( window, document, undefined ) {
 			triggerUnready( response.server );
 		}
 		// Make sure we have the required response keys.
-		if ( ! response.url || ! response.key || ! response.data ) {
+		if ( ! response.url || ! response.key ) {
 			return;
 		}
 		// Set context and method.
